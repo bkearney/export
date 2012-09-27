@@ -7,8 +7,10 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-from base_command import ExportBaseCommand
 import csv
+import string
+import random
+from base_command import ExportBaseCommand
 
 class User(ExportBaseCommand):
 
@@ -22,7 +24,6 @@ class User(ExportBaseCommand):
         self.role_mappings = {}
         if self.options['role-mapping-file']:
             self.translate_roles = True
-            print csv.Sniffer().sniff(open(self.options['role-mapping-file'], 'rb').read()).quotechar
             role_file = csv.reader(open(self.options['role-mapping-file'], 'rb'), quotechar='"', skipinitialspace=True)
             for row in role_file:
                 if len(row) == 2:
@@ -41,7 +42,7 @@ class User(ExportBaseCommand):
             data['username']= login
             data['enabled']= user.get('enabled')
             data['email']= detail.get('email')
-            data['password'] = ""
+            data['password'] = self.pass_generator()
             data['org_id']= detail.get('org_id')
             data['roles'] = self.clean_roles(self.client.user.listRoles(self.key, login), login)
             data_list.append(data)
@@ -56,6 +57,10 @@ class User(ExportBaseCommand):
             else:
                 self.add_note("Removing role %s from user %s" % (role, login))
         return new_roles
+
+
+    def pass_generator(self, size=6, chars=string.ascii_uppercase + string.digits):
+        return ''.join(random.choice(chars) for x in range(size))
 
 
     def get_headers(self):
