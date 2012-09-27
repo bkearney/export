@@ -12,7 +12,7 @@ from base_command import ExportBaseCommand
 class SystemGroup(ExportBaseCommand):
 
     def __init__(self):
-        ExportBaseCommand.__init__(self, "system_group", "export system groups")
+        ExportBaseCommand.__init__(self, "system_groups", "export system groups")
         self.create_option('--org-id', 'If provided, only filter out those groups which match the org id', aliases=['-o'], required=False)
 
     def get_data(self):
@@ -45,7 +45,7 @@ class SystemGroup(ExportBaseCommand):
         return ['name','description', 'org_id', 'unlimited']
 
     def output_filename(self):
-        return "system_group"
+        return "system_groups"
 
 
 

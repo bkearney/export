@@ -15,7 +15,7 @@ from base_command import ExportBaseCommand
 class User(ExportBaseCommand):
 
     def __init__(self):
-        ExportBaseCommand.__init__(self, "user", "export system groups")
+        ExportBaseCommand.__init__(self, "users", "export users")
 
         self.create_option('--role-mapping-file', 'file which provides a mpping between a satellite role and a collection of katello roles', aliases=['-r'], required=False)
 
@@ -67,7 +67,7 @@ class User(ExportBaseCommand):
         return ['username', 'enabled','email', 'password', 'org_id', 'roles']
 
     def output_filename(self):
-        return "user"
+        return "users"
 
 
 

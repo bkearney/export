@@ -29,7 +29,7 @@ class Org(ExportBaseCommand):
         return ['name', 'description']
 
     def output_filename(self):
-        return "org"
+        return "orgs"
 
 
 
