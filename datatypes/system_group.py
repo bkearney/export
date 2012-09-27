@@ -13,22 +13,36 @@ class SystemGroup(ExportBaseCommand):
 
     def __init__(self):
         ExportBaseCommand.__init__(self, "system_group", "export system groups")
+        self.create_option('--org-id', 'If provided, only filter out those groups which match the org id', aliases=['-o'], required=False)
 
     def get_data(self):
         group_list = self.client.systemgroup.listAllGroups(self.key)
         data_list=[]
         for group in group_list:
-            data = {}
-            data['id']= group.get('id')
-            data['name']= group.get('name')
-            data['description']= group.get('description')
-            data['org_id']= group.get('org_id')
-            data_list.append(data)
-            self.add_stat('groups exported')
+            filter_org = self.options['org-id']
+            if filter_org:
+                if (filter_org == group.get('org_id')):
+                    self._add_group(group, data_list)
+                else:
+                    self.add_note("Skipping group %s" % group.get('name'))
+                    self.add_stat('groups skipped')
+            else:
+                self._add_group(group, data_list)
+
         return data_list
 
+    def _add_group(self, group, data_list):
+        data = {}
+        data['name']= group.get('name')
+        data['description']= group.get('description')
+        data['org_id']= group.get('org_id')
+        data['unlimited']='True'
+        data_list.append(data)
+        self.add_stat('groups exported')
+
+
     def get_headers(self):
-        return ['id', 'name','description', 'org_id']
+        return ['name','description', 'org_id', 'unlimited']
 
     def output_filename(self):
         return "system_group"
