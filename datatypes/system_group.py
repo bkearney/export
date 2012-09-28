@@ -36,13 +36,13 @@ class SystemGroup(ExportBaseCommand):
         data['name']= group.get('name')
         data['description']= group.get('description')
         data['org_id']= group.get('org_id')
-        data['unlimited']='True'
+        data['max_systems']='-1'
         data_list.append(data)
         self.add_stat('groups exported')
 
 
     def get_headers(self):
-        return ['name','description', 'org_id', 'unlimited']
+        return ['name','description', 'org_id', 'max_systems']
 
     def output_filename(self):
         return "system_groups"
