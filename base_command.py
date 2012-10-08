@@ -10,6 +10,7 @@
 import csv
 import os
 import sys
+import time
 from collections import defaultdict
 from okaara.cli import Command
 from export_defaults import DEFAULT_SATELLITE_URL, DEFAULT_SATELLITE_LOGIN,\
@@ -33,6 +34,7 @@ class ExportBaseCommand(Command):
         self.errors = []
         self.notes = []
 
+        start = time.clock()
         self.pre_export()
         self.client = xmlrpclib.Server(self.options['server'], verbose=0)
         self.key = self.client.auth.login(self.options['username'], self.options['password'])
@@ -42,6 +44,7 @@ class ExportBaseCommand(Command):
         data = self.get_data()
         headers = self.get_headers()
         self.post_export()
+        self.add_stat("time (secs)", (time.clock()-start))
 
         self.dump_data(data, headers)
         self.dump_stats()
