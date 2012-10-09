@@ -10,6 +10,7 @@
 import csv
 import os
 import sys
+import json
 import time
 from collections import defaultdict
 from okaara.cli import Command
@@ -23,10 +24,11 @@ class ExportBaseCommand(Command):
     def __init__(self, name, description ):
         Command.__init__(self, name, description, self.export)
 
-        self.create_option('--server', 'satellite server to extract from', aliases=['-s'], required=False, default=DEFAULT_SATELLITE_URL)
-        self.create_option('--username', 'username to access the satellite ', aliases=['-u'], required=False, default=DEFAULT_SATELLITE_LOGIN)
-        self.create_option('--password', 'password for the user', aliases=['-p'], required=False, default=DEFAULT_SATELLITE_PASSWORD)
+        self.create_option('--server', 'Satellite server to extract from', aliases=['-s'], required=False, default=DEFAULT_SATELLITE_URL)
+        self.create_option('--username', 'Username to access the satellite ', aliases=['-u'], required=False, default=DEFAULT_SATELLITE_LOGIN)
+        self.create_option('--password', 'Password for the user', aliases=['-p'], required=False, default=DEFAULT_SATELLITE_PASSWORD)
         self.create_option('--directory', 'Where to store output files. If not provided, go to std out', aliases=['-d'], required=False)
+        self.create_flag('--csv', 'Output should be in csv format', aliases=['-c'])
 
     def export(self, **kwargs):
         self.options = kwargs
@@ -79,17 +81,21 @@ class ExportBaseCommand(Command):
         self.notes.append(string)
 
     def dump_data(self, data_list, keys):
-        writer = csv.writer(self.output_file)
-        writer.writerow(keys)
-        for data in data_list:
-            line_data = []
-            for key in keys:
-                value = data[key]
-                if type(value) is list:
-                    line_data.append(",".join(value))
-                else:
-                    line_data.append(value)
-            writer.writerow(line_data)
+        if self.options['csv']:
+            writer = csv.writer(self.output_file)
+            writer.writerow(keys)
+            for data in data_list:
+                line_data = []
+                for key in keys:
+                    value = data[key]
+                    if type(value) is list:
+                        line_data.append(",".join(value))
+                    else:
+                        line_data.append(value)
+                writer.writerow(line_data)
+        else:
+            json.dump(data_list, self.output_file)
+            self.output_file.write("\n")
 
     def dump_stats(self):
         self.stats_file.write("Stats\n")
