@@ -17,6 +17,7 @@ from collections import defaultdict
 from okaara.cli import Command
 from export_defaults import DEFAULT_SATELLITE_URL, DEFAULT_SATELLITE_LOGIN,\
     DEFAULT_SATELLITE_PASSWORD
+from csv_reader import CSVReader
 import xmlrpclib
 
 
@@ -30,6 +31,8 @@ class ExportBaseCommand(Command):
         self.create_option('--password', 'Password for the user', aliases=['-p'], required=False, default=Config.values.satellite.password)
         self.create_option('--directory', 'Where to store output files. If not provided, go to std out', aliases=['-d'], required=False, default=Config.values.export.directory)
         self.create_option('--format', 'Output format (csv or json)', aliases=['-f'], required=False, default=Config.values.export.outputformat)
+        self.create_option('--org-mapping-file', 'file which provides a mpping between a satellite org id and an org name', \
+            required=False, default=Config.values.mapping.orgs)
 
     def export(self, **kwargs):
         self.options = kwargs
@@ -38,6 +41,7 @@ class ExportBaseCommand(Command):
         self.notes = []
 
         start = time.clock()
+        self.setup_org_mappings()
         self.pre_export()
         self.client = xmlrpclib.Server(self.options['server'], verbose=0)
         self.key = self.client.auth.login(self.options['username'], self.options['password'])
@@ -52,11 +56,41 @@ class ExportBaseCommand(Command):
         self.dump_data(data, headers)
         self.dump_stats()
 
+    def setup_org_mappings(self):
+        self.translate_orgs = False
+        self.org_mappings = {}
+        if os.path.exists(self.options['org-mapping-file']):
+            self.translate_orgs= True
+            org_file = CSVReader(self.options['org-mapping-file'])
+            for row in org_file:
+                if len(row) == 3:
+                    self.org_mappings[row['id']] = (row['name'],row['label'])
+                else:
+                    self.add_error("Skipping row in org mapping file: %s" % str(row))
+
     def pre_export(self):
         pass
 
     def post_export(self):
         pass
+
+    def translate_org_label(self, org_id):
+        new_org = org_id
+        if self.translate_orgs:
+            if str(org_id) in self.org_mappings.keys():
+                new_org = self.org_mappings[str(org_id)][1]
+            else:
+                self.add_note("No Mapping for Org with id %s" % (org_id))
+        return new_org
+
+    def translate_org_name(self, org_id):
+        new_org = org_id
+        if self.translate_orgs:
+            if str(org_id) in self.org_mappings.keys():
+                new_org = self.org_mappings[str(org_id)][0]
+            else:
+                self.add_note("No Name Mapping for Org with id %s" % (org_id))
+        return new_org
 
     def setup_output(self):
         if self.options['directory']:
@@ -115,3 +149,8 @@ class ExportBaseCommand(Command):
             self.stats_file.write("-----\n")
             for note in self.notes:
                 self.stats_file.write(note + "\n")
+
+def is_true(item):
+    return str(item) in ['T', 't', 'True', 'TRUE', 'true', '1', 'Y', \
+        'y', 'YES', 'yes', 'on']
+

@@ -1,4 +1,4 @@
-./export.py orgs -d ./export
-./export.py users -d ./export -r role_mappings.csv
-./export.py system_groups -d ./export
-./export.py activation_keys -d ./export
+./export.py orgs 
+./export.py users 
+./export.py system_groups 
+./export.py activation_keys

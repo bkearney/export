@@ -34,7 +34,6 @@ class User(ExportBaseCommand):
                     self.role_mappings [row[0]] = row[1]
                 else:
                     self.add_error("Skipping row in mapping file: %s" % str(row))
-            self.role_mappings
 
     def get_data(self):
         user_list = self.client.user.listUsers(self.key)
@@ -47,7 +46,7 @@ class User(ExportBaseCommand):
             data['enabled']= user.get('enabled')
             data['email']= detail.get('email')
             data['password'] = self.pass_generator()
-            data['org_id']= detail.get('org_id')
+            data['org_name']= self.translate_org_name(detail.get('org_id'))
             data['roles'] = self.clean_roles(self.client.user.listRoles(self.key, login), login)
             data_list.append(data)
             self.add_stat('users exported')
@@ -71,7 +70,7 @@ class User(ExportBaseCommand):
 
 
     def get_headers(self):
-        return ['username', 'enabled','email', 'password', 'org_id', 'roles']
+        return ['username', 'enabled','email', 'password', 'org_name', 'roles']
 
     def output_filename(self):
         return "users"

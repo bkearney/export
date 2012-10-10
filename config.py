@@ -45,7 +45,11 @@ class Config(object):
         Config.values.satellite.password = ''
         Config.values.export.directory = ''
         Config.values.export.outputformat = 'json'
+        Config.values.activationkey.environment = 'Dev'
+        Config.values.activationkey.includedisabled = 'False'
         Config.values.mapping.roles = ''
+        Config.values.mapping.orgs = ''
+
 
         if os.path.exists(Config.USER):
             user_settings = INIConfig(open(Config.USER))

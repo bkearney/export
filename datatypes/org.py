@@ -19,14 +19,15 @@ class Org(ExportBaseCommand):
         data_list=[]
         for org in org_list:
             data = {}
-            data['name']= org.get('id')
+            data['name']= self.translate_org_name(org.get('id'))
+            data['label']= self.translate_org_label(org.get('id'))
             data['description']= org.get('name')
             data_list.append(data)
             self.add_stat('orgs exported')
         return data_list
 
     def get_headers(self):
-        return ['name', 'description']
+        return ['name', 'label', 'description']
 
     def output_filename(self):
         return "orgs"
