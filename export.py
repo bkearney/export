@@ -9,6 +9,8 @@
 
 import sys
 
+from config import Config
+from print_config import PrintConfig
 from okaara.prompt import Prompt, COLOR_LIGHT_CYAN, COLOR_LIGHT_BLUE
 from okaara.cli import Cli, Section, Command, Option, Flag
 from datatypes import org, system_group, user, activation_key
@@ -16,10 +18,12 @@ from datatypes import org, system_group, user, activation_key
 
 class ExportCli(Cli):
     def __init__(self):
+        Config()
         Cli.__init__(self)
 
         self.add_command(activation_key.ActivationKey())
         self.add_command(org.Org())
+        self.add_command(PrintConfig())
         self.add_command(system_group.SystemGroup())
         self.add_command(user.User())
 

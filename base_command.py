@@ -12,6 +12,7 @@ import os
 import sys
 import json
 import time
+from config import Config
 from collections import defaultdict
 from okaara.cli import Command
 from export_defaults import DEFAULT_SATELLITE_URL, DEFAULT_SATELLITE_LOGIN,\
@@ -24,11 +25,11 @@ class ExportBaseCommand(Command):
     def __init__(self, name, description ):
         Command.__init__(self, name, description, self.export)
 
-        self.create_option('--server', 'Satellite server to extract from', aliases=['-s'], required=False, default=DEFAULT_SATELLITE_URL)
-        self.create_option('--username', 'Username to access the satellite ', aliases=['-u'], required=False, default=DEFAULT_SATELLITE_LOGIN)
-        self.create_option('--password', 'Password for the user', aliases=['-p'], required=False, default=DEFAULT_SATELLITE_PASSWORD)
-        self.create_option('--directory', 'Where to store output files. If not provided, go to std out', aliases=['-d'], required=False)
-        self.create_flag('--csv', 'Output should be in csv format', aliases=['-c'])
+        self.create_option('--server', 'Satellite server to extract from', aliases=['-s'], required=False, default=Config.values.satellite.url)
+        self.create_option('--username', 'Username to access the satellite ', aliases=['-u'], required=False, default=Config.values.satellite.username)
+        self.create_option('--password', 'Password for the user', aliases=['-p'], required=False, default=Config.values.satellite.password)
+        self.create_option('--directory', 'Where to store output files. If not provided, go to std out', aliases=['-d'], required=False, default=Config.values.export.directory)
+        self.create_option('--format', 'Output format (csv or json)', aliases=['-f'], required=False, default=Config.values.export.outputformat)
 
     def export(self, **kwargs):
         self.options = kwargs
@@ -81,7 +82,7 @@ class ExportBaseCommand(Command):
         self.notes.append(string)
 
     def dump_data(self, data_list, keys):
-        if self.options['csv']:
+        if self.options['format'] == 'csv':
             writer = csv.writer(self.output_file)
             writer.writerow(keys)
             for data in data_list:
