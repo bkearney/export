@@ -8,21 +8,25 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 import csv
-import string
 import random
+import string
+import os
 from base_command import ExportBaseCommand
+from config import Config
 
 class User(ExportBaseCommand):
 
     def __init__(self):
         ExportBaseCommand.__init__(self, "users", "export users")
 
-        self.create_option('--role-mapping-file', 'file which provides a mpping between a satellite role and a collection of katello roles', aliases=['-r'], required=False)
+        self.create_option('--role-mapping-file', 'file which provides a mpping between a satellite role and a collection of katello roles', \
+            aliases=['-r'], required=False, \
+            default=Config.values.mapping.roles)
 
     def pre_export(self):
         self.translate_roles = False
         self.role_mappings = {}
-        if self.options['role-mapping-file']:
+        if os.path.exists(self.options['role-mapping-file']):
             self.translate_roles = True
             role_file = csv.reader(open(self.options['role-mapping-file'], 'rb'), quotechar='"', skipinitialspace=True)
             for row in role_file:
@@ -50,12 +54,15 @@ class User(ExportBaseCommand):
         return data_list
 
     def clean_roles(self, roles, login):
-        new_roles = []
-        for role in roles:
-            if role in self.role_mappings.keys():
-                new_roles.append(self.role_mappings[role])
-            else:
-                self.add_note("Removing role %s from user %s" % (role, login))
+        new_roles = roles
+        if self.translate_roles:
+            new_roles = []
+            for role in roles:
+                if role in self.role_mappings.keys():
+                    new_roles.append(self.role_mappings[role])
+                else:
+                    self.add_note("Removing role %s from user %s" % (role, login))
+
         return new_roles
 
 
