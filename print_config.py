@@ -13,7 +13,7 @@ from config import Config
 class PrintConfig(Command):
 
     def __init__(self):
-        Command.__init__(self, "print-config", "print out the config file", self.print_config)
+        Command.__init__(self, "dump_config", "print out the config file", self.print_config)
 
     def print_config(self):
         print Config.values
