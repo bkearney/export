@@ -7,11 +7,11 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-import csv
 import random
 import string
 import os
 from base_command import ExportBaseCommand
+from csv_reader import CSVReader
 from config import Config
 
 class User(ExportBaseCommand):
@@ -28,10 +28,10 @@ class User(ExportBaseCommand):
         self.role_mappings = {}
         if os.path.exists(self.options['role-mapping-file']):
             self.translate_roles = True
-            role_file = csv.reader(open(self.options['role-mapping-file'], 'rb'), quotechar='"', skipinitialspace=True)
+            role_file = CSVReader(self.options['role-mapping-file'])
             for row in role_file:
                 if len(row) == 2:
-                    self.role_mappings [row[0]] = row[1]
+                    self.role_mappings [row['satellite_role']] = row['katello_role']
                 else:
                     self.add_error("Skipping row in mapping file: %s" % str(row))
 
