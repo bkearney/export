@@ -43,10 +43,15 @@ class ExportBaseCommand(Command):
         start = time.clock()
         self.setup_org_mappings()
         self.pre_export()
-        self.client = xmlrpclib.Server(self.options['server'], verbose=0)
-        self.key = self.client.auth.login(self.options['username'], self.options['password'])
-
         self.setup_output()
+
+        try:
+            self.client = xmlrpclib.Server(self.options['server'], verbose=0)
+            self.key = self.client.auth.login(self.options['username'], self.options['password'])
+        except Exception, e:
+            self.add_error("Can not connect to to the Satellite Server")
+            self.dump_stats()
+            sys.exit(-1)
 
         data = self.get_data()
         headers = self.get_headers()
