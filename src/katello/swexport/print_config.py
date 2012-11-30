@@ -8,7 +8,7 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 from okaara.cli import Command
-from config import Config
+from katello.swexport.config import Config
 
 class PrintConfig(Command):
 

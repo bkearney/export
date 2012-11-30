@@ -12,12 +12,10 @@ import os
 import sys
 import json
 import time
-from config import Config
+from katello.swexport.config import Config
+from katello.swexport.csv_reader import CSVReader
 from collections import defaultdict
 from okaara.cli import Command
-from export_defaults import DEFAULT_SATELLITE_URL, DEFAULT_SATELLITE_LOGIN,\
-    DEFAULT_SATELLITE_PASSWORD
-from csv_reader import CSVReader
 import xmlrpclib
 
 

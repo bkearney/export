@@ -9,11 +9,11 @@
 
 import sys
 
-from config import Config
-from print_config import PrintConfig
+from katello.swexport.config import Config
+from katello.swexport.print_config import PrintConfig
 from okaara.prompt import Prompt, COLOR_LIGHT_CYAN, COLOR_LIGHT_BLUE
 from okaara.cli import Cli, Section, Command, Option, Flag
-from datatypes import org, system_group, user, activation_key
+from katello.swexport.datatypes import org, system_group, user, activation_key
 
 
 class ExportCli(Cli):

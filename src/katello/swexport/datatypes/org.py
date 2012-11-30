@@ -7,7 +7,7 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-from base_command import ExportBaseCommand
+from katello.swexport.base_command import ExportBaseCommand
 
 class Org(ExportBaseCommand):
 

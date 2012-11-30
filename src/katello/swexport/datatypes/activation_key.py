@@ -7,8 +7,8 @@
 # along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-from base_command import ExportBaseCommand, is_true
-from config import Config
+from katello.swexport.base_command import ExportBaseCommand, is_true
+from katello.swexport.config import Config
 
 class ActivationKey(ExportBaseCommand):
 

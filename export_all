@@ -1,4 +1,6 @@
-./export.py orgs 
-./export.py users 
-./export.py system_groups 
-./export.py activation_keys
+EXPORT PYTHONPATH=$PWD/src
+
+./bin/sw-export orgs
+./bin/sw-export users
+./bin/sw-export system_groups
+./bin/sw-export activation_keys

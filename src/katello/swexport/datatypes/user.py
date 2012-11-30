@@ -10,9 +10,9 @@
 import random
 import string
 import os
-from base_command import ExportBaseCommand
-from csv_reader import CSVReader
-from config import Config
+from katello.swexport.base_command import ExportBaseCommand
+from katello.swexport.csv_reader import CSVReader
+from katello.swexport.config import Config
 
 class User(ExportBaseCommand):
 
@@ -43,7 +43,7 @@ class User(ExportBaseCommand):
             login = user.get('login')
             detail = self.client.user.getDetails(self.key, login)
             data['username']= login
-            data['enabled']= user.get('enabled')
+            data['disabled']= not user.get('enabled')
             data['email']= detail.get('email')
             data['password'] = self.pass_generator()
             data['org_name']= self.translate_org_name(detail.get('org_id'))
@@ -70,7 +70,7 @@ class User(ExportBaseCommand):
 
 
     def get_headers(self):
-        return ['username', 'enabled','email', 'password', 'org_name', 'roles']
+        return ['username', 'disabled','email', 'password', 'org_name', 'roles']
 
     def output_filename(self):
         return "users"
