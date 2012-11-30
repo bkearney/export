@@ -40,9 +40,9 @@ class Config(object):
         Config.values = INIConfig()
 
         # Set the defaults
-        Config.values.satellite.url = ''
-        Config.values.satellite.username = ''
-        Config.values.satellite.password = ''
+        Config.values.server.url = ''
+        Config.values.server.username = ''
+        Config.values.server.password = ''
         Config.values.export.directory = ''
         Config.values.export.outputformat = 'json'
         Config.values.activationkey.environment = 'Dev'

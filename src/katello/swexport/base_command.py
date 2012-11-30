@@ -24,9 +24,9 @@ class ExportBaseCommand(Command):
     def __init__(self, name, description ):
         Command.__init__(self, name, description, self.export)
 
-        self.create_option('--server', 'Satellite server to extract from', aliases=['-s'], required=False, default=Config.values.satellite.url)
-        self.create_option('--username', 'Username to access the satellite ', aliases=['-u'], required=False, default=Config.values.satellite.username)
-        self.create_option('--password', 'Password for the user', aliases=['-p'], required=False, default=Config.values.satellite.password)
+        self.create_option('--server', 'Server to extract from', aliases=['-s'], required=False, default=Config.values.server.url)
+        self.create_option('--username', 'Username to access the server ', aliases=['-u'], required=False, default=Config.values.server.username)
+        self.create_option('--password', 'Password for the user', aliases=['-p'], required=False, default=Config.values.server.password)
         self.create_option('--directory', 'Where to store output files. If not provided, go to std out', aliases=['-d'], required=False, default=Config.values.export.directory)
         self.create_option('--format', 'Output format (csv or json)', aliases=['-f'], required=False, default=Config.values.export.outputformat)
         self.create_option('--org-mapping-file', 'file which provides a mpping between a satellite org id and an org name', \
